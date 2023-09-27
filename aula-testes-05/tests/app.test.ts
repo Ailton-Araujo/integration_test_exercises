@@ -22,15 +22,20 @@ describe("GET /fibonacci", () => {
     const { status } = await api.get("/fibonacci").query({ elements });
     expect(status).toBe(400);
   });
-  it("should return 400 when the query string elements is 0", async () => {
+  it("should return 400 when the query string elements is less than 1", async () => {
     const elements = 0;
     const { status } = await api.get("/fibonacci").query({ elements });
     expect(status).toBe(400);
   });
-  it("should return 200 when the query string elements is valid and the body must have the same length equal the value o elements", async () => {
+  it("should return 400 when the query string elements is bigger than Max Value", async () => {
+    const { status } = await api.get(
+      `/fibonacci?elements=${Number.MAX_VALUE + 1}`
+    );
+    expect(status).toBe(400);
+  });
+  it("should return a valid Body and status 200 when the query string is valid", async () => {
     const elements = 6;
     const { status, body } = await api.get("/fibonacci").query({ elements });
-    console.log(body);
     expect(status).toBe(200);
     expect(body).toHaveLength(6);
     expect(body).toEqual([0, 1, 1, 2, 3, 5]);
